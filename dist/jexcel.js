@@ -1639,6 +1639,88 @@ var jexcel = (function(el, options) {
     }
 
     /**
+     * Set value to multiple cells based on starting cell or range
+     * 
+     * @param mixed expression destination cell (e.g. "C5") or range (e.g "C5:H10")
+     * @param string value value
+     * @return void
+     */
+    obj.setValues = function(expression, value, force) {
+        var records = [];
+
+        var updateCellsFromRange = function(tokens) {
+            for (var index = 0; index < tokens.length; index++) {
+                var f = [];
+                var token = tokens[index].split(':');
+                var e1 = jexcel.getIdFromColumnName(token[0], true);
+                var e2 = jexcel.getIdFromColumnName(token[1], true);
+
+                if (e1[0] <= e2[0]) {
+                    var x1 = e1[0];
+                    var x2 = e2[0];
+                } else {
+                    var x1 = e2[0];
+                    var x2 = e1[0];
+                }
+
+                if (e1[1] <= e2[1]) {
+                    var y1 = e1[1];
+                    var y2 = e2[1];
+                } else {
+                    var y1 = e2[1];
+                    var y2 = e1[1];
+                }
+                
+                updateCells(x1, y1, x2, y2, value);
+            }
+        }
+
+        var updateCellsFromCell = function(token) {
+            var e1 = jexcel.getIdFromColumnName(cell[0], true);
+
+            var x1 = e1[1];
+            var y1 = e1[0];
+            var x2 = value[1].length + x1;
+            var y2 = value[0].length + y1;
+            updateCells(x1, y1, x2, y2, value);
+        }
+
+        var updateCells = function(x1, y1, x2, y2, value) {
+            var f = [];
+            for (var j = y1; j <= y2; j++) {
+                if(value[j-y1]){
+                    for (var i = x1; i <= x2; i++) {
+                        f.push(jexcel.getColumnNameFromId([i, j]));
+                        if(value[j-y1][i-x1]){
+                            records.push(obj.updateCell(j, i, value[j-y1][i-x1], force));
+                        }  
+                    }
+                }
+            }
+        }
+
+        var range = expression.match(/([A-Z]+[0-9]+)\:([A-Z]+[0-9]+)/g);
+        if (range && range.length) {
+            updateCellsFromRange(range);
+        } else {
+            var cell = expression.match(/([A-Z]+[0-9]+)/g);
+            if (cell && cell.length == 1) {
+                updateCellsFromCell(cell);
+            }
+        }
+
+        //Update history
+        obj.setHistory({
+            action:'setValue',
+            records:records,
+            selection:obj.selectedCell,
+        });
+
+        // Update table with custom configurations if applicable
+        obj.updateTable();
+    }
+
+    /**
      * Set a cell value based on coordinates
      * 
      * @param int x destination cell
