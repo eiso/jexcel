@@ -1677,10 +1677,11 @@ var jexcel = (function(el, options) {
 
         var updateCellsFromCell = function(token) {
             var e1 = jexcel.getIdFromColumnName(cell[0], true);
-
+            
             var x1 = e1[1];
             var y1 = e1[0];
-            var x2 = value[1].length + x1;
+            //console.log(value[0], value[1]);
+            var x2 = value[0].length + x1;
             var y2 = value[0].length + y1;
             updateCells(x1, y1, x2, y2, value);
         }
