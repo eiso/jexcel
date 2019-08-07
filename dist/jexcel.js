@@ -828,9 +828,9 @@ var jexcel = (function(el, options) {
                 td.appendChild(img);
             }
         } else {
-            if ((''+value).substr(0,1) == '=') {
-                value = obj.executeFormula(value, i, j)
-            }
+            // if ((''+value).substr(0,1) == '=') {
+            //     value = obj.executeFormula(value, i, j)
+            // }
             if (obj.options.columns[i].mask) {
                 var decimal = obj.options.columns[i].decimal || '.'; 
                 value = '' + jSuites.mask.run(value, obj.options.columns[i].mask, decimal);
@@ -1455,11 +1455,11 @@ var jexcel = (function(el, options) {
                     var value = img && img.tagName == 'IMG' ? img.src : '';
                 } else if (obj.options.columns[x].type == 'numeric') {
                     var value = cell.children[0].value;
-                    if (value.substr(0,1) != '=') {
-                        if (value == '') {
-                            value = obj.options.columns[x].allowEmpty ? '' : 0;
-                        }
-                    }
+                    // if (value.substr(0,1) != '=') {
+                    //     if (value == '') {
+                    //         value = obj.options.columns[x].allowEmpty ? '' : 0;
+                    //     }
+                    // }
                     cell.children[0].onblur = null;
                 } else {
                     var value = cell.children[0].value;
@@ -1863,9 +1863,9 @@ var jexcel = (function(el, options) {
                         obj.options.data[y][x] = value;
                     }
                     // Label
-                    if (('' + value).substr(0,1) == '=') {
-                        value = obj.executeFormula(value, x, y);
-                    }
+                    // if (('' + value).substr(0,1) == '=') {
+                    //     value = obj.executeFormula(value, x, y);
+                    // }
                     if (obj.options.columns[x].mask) {
                         var decimal = obj.options.columns[x].decimal || '.'; 
                         value = '' + jSuites.mask.run(value, obj.options.columns[x].mask, decimal);
@@ -1964,30 +1964,30 @@ var jexcel = (function(el, options) {
 
                     if (value && t0 == t1) {
                         if (obj.options.columns[i].type == 'text' || obj.options.columns[i].type == 'number') {
-                            if ((''+value).substr(0,1) == '=') {
-                                var tokens = value.match(/([A-Z]+[0-9]+)/g);
+                            // if ((''+value).substr(0,1) == '=') {
+                            //     var tokens = value.match(/([A-Z]+[0-9]+)/g);
 
-                                if (tokens) {
-                                    var affectedTokens = [];
-                                    for (var index = 0; index < tokens.length; index++) {
-                                        var position = jexcel.getIdFromColumnName(tokens[index], 1);
-                                        position[1] += lineNumber;
-                                        var token = jexcel.getColumnNameFromId([position[0], position[1]]);
+                            //     if (tokens) {
+                            //         var affectedTokens = [];
+                            //         for (var index = 0; index < tokens.length; index++) {
+                            //             var position = jexcel.getIdFromColumnName(tokens[index], 1);
+                            //             position[1] += lineNumber;
+                            //             var token = jexcel.getColumnNameFromId([position[0], position[1]]);
 
-                                        if (token != tokens[index]) {
-                                            affectedTokens[tokens[index]] = token;
-                                        }
-                                    }
-                                    // Update formula
-                                    if (affectedTokens) {
-                                        value = obj.updateFormula(value, affectedTokens)
-                                    }
-                                }
-                            } else {
+                            //             if (token != tokens[index]) {
+                            //                 affectedTokens[tokens[index]] = token;
+                            //             }
+                            //         }
+                            //         // Update formula
+                            //         if (affectedTokens) {
+                            //             value = obj.updateFormula(value, affectedTokens)
+                            //         }
+                            //     }
+                            // } else {
                                 if (value == Number(value)) {
                                     value = Number(value) + lineNumber;
                                 }
-                            }
+                            //}
                         } else if (obj.options.columns[i].type == 'calendar') {
                             var date = new Date(value);
                             date.setDate(date.getDate() + lineNumber);
@@ -1998,9 +1998,9 @@ var jexcel = (function(el, options) {
                     records.push(obj.updateCell(i, j, value));
 
                     // Update formulas chain
-                    if ((''+value).substr(0,1) == '=') {
-                        recordsChain[i + ',' + j] = true;
-                    }
+                    // if ((''+value).substr(0,1) == '=') {
+                    //     recordsChain[i + ',' + j] = true;
+                    // }
                 }
                 posx++;
             }
@@ -4030,12 +4030,12 @@ var jexcel = (function(el, options) {
                 var cell = jexcel.getIdFromColumnName(obj.formula[cellId][i], true);
                 // Update cell
                 var value = ''+obj.options.data[cell[1]][cell[0]];
-                if (value.substr(0,1) == '=') {
-                    records.push(obj.updateCell(cell[0], cell[1], value, true));
-                } else {
+                // if (value.substr(0,1) == '=') {
+                //     records.push(obj.updateCell(cell[0], cell[1], value, true));
+                // } else {
                     // No longer a formula, remove from the chain
                     Object.keys(obj.formula)[i] = null;
-                }
+                //}
                 obj.updateFormulaChain(cell[0], cell[1], records);
             }
         }
@@ -4050,13 +4050,13 @@ var jexcel = (function(el, options) {
             for (var i = 0; i < obj.options.data[0].length; i++) {
                 var value = '' + obj.options.data[j][i];
                 // Is formula
-                if (value.substr(0,1) == '=') {
-                    // Replace tokens
-                    var newFormula = obj.updateFormula(value, referencesToUpdate);
-                    if (newFormula != value) {
-                        obj.options.data[j][i] = newFormula;
-                    }
-                }
+                // if (value.substr(0,1) == '=') {
+                //     // Replace tokens
+                //     var newFormula = obj.updateFormula(value, referencesToUpdate);
+                //     if (newFormula != value) {
+                //         obj.options.data[j][i] = newFormula;
+                //     }
+                // }
             }
         }
 
@@ -4207,9 +4207,9 @@ var jexcel = (function(el, options) {
                         var value = '';
                     }
                     // Get column data
-                    if ((''+value).substr(0,1) == '=') {
-                        value = obj.executeFormula(value, position[0], position[1]);
-                    }
+                    // if ((''+value).substr(0,1) == '=') {
+                    //     value = obj.executeFormula(value, position[0], position[1]);
+                    // }
                     // Type!
                     if (value && ((''+value).trim() == '' || value != Number(value))) {
                         // Trying any formatted number
