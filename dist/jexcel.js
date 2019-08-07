@@ -4211,7 +4211,7 @@ var jexcel = (function(el, options) {
                         value = obj.executeFormula(value, position[0], position[1]);
                     }
                     // Type!
-                    if ((''+value).trim() == '' || value != Number(value)) {
+                    if (value && ((''+value).trim() == '' || value != Number(value))) {
                         // Trying any formatted number
                         var number = ('' + value);
                         var decimal = obj.options.columns[position[0]].decimal || '.';
