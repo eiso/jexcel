@@ -1650,7 +1650,6 @@ var jexcel = (function(el, options) {
 
         var updateCellsFromRange = function(tokens) {
             for (var index = 0; index < tokens.length; index++) {
-                var f = [];
                 var token = tokens[index].split(':');
                 var e1 = jexcel.getIdFromColumnName(token[0], true);
                 var e2 = jexcel.getIdFromColumnName(token[1], true);
@@ -1678,22 +1677,19 @@ var jexcel = (function(el, options) {
         var updateCellsFromCell = function(token) {
             var e1 = jexcel.getIdFromColumnName(cell[0], true);
 
-            var x1 = e1[1];
             var y1 = e1[0];
-            //console.log(value[0], value[1]);
-            var x2 = value[0].length + x1;
+            var x1 = e1[1];
             var y2 = value[0].length + y1;
+            var x2 = value.length + x1;
             updateCells(x1, y1, x2, y2, value);
         }
 
         var updateCells = function(x1, y1, x2, y2, value) {
-            var f = [];
-            for (var j = y1; j <= y2; j++) {
-                if(typeof value[j-y1] !== 'undefined'){
-                    for (var i = x1; i <= x2; i++) {
-                        f.push(jexcel.getColumnNameFromId([i, j]));
-                        if(typeof value[j-y1][i-x1] !== 'undefined'){
-                            records.push(obj.updateCell(j, i, value[j-y1][i-x1], force));
+            for (var j = x1; j <= x2; j++) {
+                if(typeof value[j-x1] !== 'undefined' && obj.records[j]) {
+                    for (var i = y1; i <= y2; i++) {
+                        if(typeof value[j-x1][i-y1] !== 'undefined' && obj.records[j][i]){
+                            records.push(obj.updateCell(i, j, value[j-x1][i-y1], force));
                         }
                     }
                 }
